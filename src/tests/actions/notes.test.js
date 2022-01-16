@@ -3,11 +3,16 @@
  */
 import configureStore from 'redux-mock-store'; 
 import thunk from 'redux-thunk';
-import { startLoadinNotes, startNewNote, startSaveNote } from '../../actions/notes';
+import { startLoadinNotes, startNewNote, startSaveNote, startUploading } from '../../actions/notes';
 import { db } from '../../firebase/firebase-config';
 import { doc, deleteDoc, getDoc } from "@firebase/firestore";
 import { types } from '../../types/types';
+import { fileUpload } from '../../helpers/fileUpload';
+import * as fs from 'fs';
 
+jest.mock('../../helpers/fileUpload', ()=>({
+       fileUpload: jest.fn()
+}));
 
 
 const middlewares = [thunk]; 
@@ -16,6 +21,13 @@ const mockStore = configureStore(middlewares);
 const initState = {
     auth: {
         uid:'uidTesting'
+    },
+    notes: {
+        active: {
+            id: 'qF0SiWo8sgRHg0DJELWH',
+            title: 'Hola title prueba',
+            body: 'Hola body prueba'
+        }
     }
 }
 
@@ -26,9 +38,10 @@ describe('Pruebas con las acciones de notes', ()=>{
     //afterAll(() => { disableNetwork(db);}) 
     beforeEach( () => {
         store = mockStore(initState);
-    }
-
+        }
     )
+
+
 
     test('Debe crear una nueva nota startNewNote ',  async() => {
 
@@ -106,6 +119,20 @@ describe('Pruebas con las acciones de notes', ()=>{
         
     })
     
+    test('startUploading debe actualizar el url del entry', async () => {
+        
+
+        fileUpload.mockReturnValue('https://hola-mundo.com');
+        fs.writeFileSync('foto.jpg', '')
+        const file = fs.readFileSync('foto.jpg');
+        await store.dispatch(startUploading(file));
+ 
+        const docRef = doc( db,'/uidTesting/journal/notes/qF0SiWo8sgRHg0DJELWH');
+        const docRecived = await getDoc( docRef );
+
+        expect(docRecived.data().url).toBe('https://hola-mundo.com');
+
+    })
     
     
 
