@@ -6,8 +6,7 @@ import thunk from 'redux-thunk';
 import { startLoadinNotes, startNewNote, startSaveNote } from '../../actions/notes';
 import { db } from '../../firebase/firebase-config';
 import { doc, deleteDoc, getDoc } from "@firebase/firestore";
-import { types } from '../types';
-import { disableNetwork } from 'firebase/firestore';
+import { types } from '../../types/types';
 
 
 

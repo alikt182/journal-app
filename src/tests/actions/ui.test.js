@@ -1,5 +1,5 @@
 import { finishLoading, removeError, setError, startLoading } from '../../actions/ui'
-import { types } from '../types';
+import { types } from '../../types/types';
 
 describe('Pruebas en ui-actions', ()=>{
 
