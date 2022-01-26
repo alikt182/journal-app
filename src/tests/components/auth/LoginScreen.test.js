@@ -1,18 +1,77 @@
-import React from 'react';
-import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
-import { configure, mount } from 'enzyme';
+import '../../../setupTests';
+import { mount } from 'enzyme';
+import { Provider } from 'react-redux'
+import { MemoryRouter } from 'react-router-dom';
+
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+
+import '@testing-library/jest-dom';
+
 import { LoginScreen } from '../../../components/auth/LoginScreen';
+import { startGoogleLogin, startLoginEmailPassword } from '../../../actions/auth';
+
+jest.mock('../../../actions/auth', () => ({
+    startGoogleLogin: jest.fn(),
+    startLoginEmailPassword: jest.fn(),
+}))
+
+const middlewares = [thunk];
+const mockStore = configureStore(middlewares);
+
+const initState = {
+    auth: {},
+    ui: {
+        loading: false,
+        msgError: null
+    }
+};
+
+let store = mockStore(initState);
+store.dispatch = jest.fn();
+
+const wrapper = mount( 
+    <Provider store={ store }>
+        <MemoryRouter>
+            <LoginScreen /> 
+        </MemoryRouter>
+    </Provider>
+
+)
+
+describe('Pruebas en <LoginScreen />', () => {
+
+    beforeEach(()=> {
+        store = mockStore(initState);
+        jest.clearAllMocks();
+    })
 
 
-configure({ adapter: new Adapter() });
+    test('debe mostrarse correctamente', () => {
+        
+        expect( wrapper ).toMatchSnapshot();
 
-describe('Pruebas en componente <LoginScreen/>', () => {
+    });
+    
+    test('debe disparar la accion de startGoogleLogin', () => {
+        
+        wrapper.find('.google-btn').prop('onClick')();
 
-    const wrapper = mount( <LoginScreen/> );
-    //expect( wrapper ).toMatchSnapshot(); 
+        expect( startGoogleLogin ).toHaveBeenCalled();
 
-    // test('should first', () => {
-    // });
+    });
+
+    test('debe disparar el startLogin con los respectivos argumentos', () => {
+
+        wrapper.find('form').prop('onSubmit')(
+            { preventDefault(){} }
+        );
+
+        expect( startLoginEmailPassword ).toHaveBeenCalledWith( 'elver@gmail.com','123456' );
+    });
     
 
+
+    
+    
 })
