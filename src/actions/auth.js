@@ -13,7 +13,7 @@ export const startLoginEmailPassword = ( email, password )=> {
 
         dispatch(startLoading());
 
-        signInWithEmailAndPassword( auth, email,password )
+        return signInWithEmailAndPassword( auth, email,password )
             .then( ({user}) => {
                 
                 dispatch(
