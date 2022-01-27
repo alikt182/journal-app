@@ -9,12 +9,7 @@ import { login } from '../../actions/auth';
 import { AppRouter } from '../../routers/AppRouter';
 import { act } from 'react-dom/test-utils';
 import { getAuth, signInWithEmailAndPassword } from '@firebase/auth';
-import Swal from 'sweetalert2';
- 
-jest.mock('sweetalert2', () => ({
-    fire: jest.fn()
-}));
- 
+
 jest.mock('../../actions/auth', () => ({
     login: jest.fn()
 }));
