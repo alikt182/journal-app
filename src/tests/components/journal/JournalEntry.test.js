@@ -32,7 +32,7 @@ const wrapper = mount(
 describe('Pruebas en <JournalEntry/>', () => {
 
     test('debe mostrarse correctamente', () => {
-        expect( wrapper ).toMatchSnapshot();u
+        expect( wrapper ).toMatchSnapshot();
     });
 
     test('debe activar la nota', () => {
